@@ -31,10 +31,21 @@ declare global {
 
   interface ILogin {
     user: {
-      id: number;
+      id: string;
       name: string;
       email: string;
     };
     access_token: string;
+  }
+
+  interface IVerify {
+    id: string;
+    code: string;
+  }
+  interface IRegister {
+    name: string;
+    email: string;
+    password: string;
+    id: string;
   }
 }

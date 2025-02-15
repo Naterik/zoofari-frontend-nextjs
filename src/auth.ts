@@ -8,22 +8,23 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
     Credentials({
       credentials: {
-        email: {},
+        username: {},
         password: {},
       },
       async authorize(credentials) {
         const res = await sendRequest<IBackendRes<ILogin>>({
           method: "POST",
-          url: "http://localhost:8080/auth/login",
+          url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/login`,
           body: {
-            username: credentials.email,
+            username: credentials.username,
             password: credentials.password,
           },
         });
 
         if (res.statusCode === 201) {
+          //return user
           return {
-            id: String(res.data?.user?.id),
+            id: res.data?.user?.id,
             name: res.data?.user?.name,
             email: res.data?.user?.email,
             access_token: res.data?.access_token,
@@ -49,10 +50,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       return token;
     },
     async session({ session, token }) {
-      if (token) {
-        (session.user as IUser) = token.user;
-      }
+      (session.user as IUser) = token.user;
       return session;
+    },
+    authorized: async ({ auth }) => {
+      return !!auth;
     },
   },
   secret: process.env.AUTH_SECRET,

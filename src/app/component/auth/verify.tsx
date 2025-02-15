@@ -15,21 +15,22 @@ import Link from "next/link";
 import { sendRequest } from "@/utils/api";
 import { useRouter } from "next/navigation";
 
-const Register = () => {
+const Verify = (props: any) => {
+  const { id } = props;
   const router = useRouter();
   const onFinish = async (values: any) => {
-    const { email, password, name } = values;
-    const res = await sendRequest<IBackendRes<any>>({
-      url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/register`,
+    const { id, code } = values;
+    const res = await sendRequest<IBackendRes<IVerify>>({
+      url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/check-code`,
       method: "POST",
       body: {
-        email,
-        password,
-        name,
+        id,
+        code,
       },
     });
     if (res?.data) {
-      router.push(`/verify/${res.data.id}`);
+      message.success("Kích hoạt tài khoản thành công");
+      router.push(`/auth/login`);
     } else {
       notification.error({
         message: "Register Error",
@@ -49,52 +50,36 @@ const Register = () => {
             borderRadius: "5px",
           }}
         >
-          <legend>Đăng Ký Tài Khoản</legend>
+          <legend>Xác thực đăng ký</legend>
           <Form
             name="basic"
             onFinish={onFinish}
             autoComplete="off"
             layout="vertical"
           >
+            <Form.Item label="Id" name="id" initialValue={id} hidden>
+              <Input disabled />
+            </Form.Item>
+            <div>Mã code đã được gửi ,vui lòng kiểm tra email</div>
+            <Divider />
             <Form.Item
-              label="Email"
-              name="email"
+              label="Code"
+              name="code"
               rules={[
                 {
                   required: true,
-                  message: "Please input your email!",
+                  message: "Please input your code!",
                 },
               ]}
             >
               <Input />
             </Form.Item>
-
-            <Form.Item
-              label="Password"
-              name="password"
-              rules={[
-                {
-                  required: true,
-                  message: "Please input your password!",
-                },
-              ]}
-            >
-              <Input.Password />
-            </Form.Item>
-
-            <Form.Item label="Name" name="name">
-              <Input />
-            </Form.Item>
-
             <Form.Item>
               <Button type="primary" htmlType="submit">
                 Submit
               </Button>
             </Form.Item>
           </Form>
-          <Link href={"/"}>
-            <ArrowLeftOutlined /> Quay lại trang chủ
-          </Link>
           <Divider />
           <div style={{ textAlign: "center" }}>
             Đã có tài khoản? <Link href={"/auth/login"}>Đăng nhập</Link>
@@ -105,4 +90,4 @@ const Register = () => {
   );
 };
 
-export default Register;
+export default Verify;
