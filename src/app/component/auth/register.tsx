@@ -17,9 +17,9 @@ import { useRouter } from "next/navigation";
 
 const Register = () => {
   const router = useRouter();
-  const onFinish = async (values: any) => {
+  const onFinish = async (values: IRegister) => {
     const { email, password, name } = values;
-    const res = await sendRequest<IBackendRes<any>>({
+    const res = await sendRequest<IBackendRes<IRegister>>({
       url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/register`,
       method: "POST",
       body: {

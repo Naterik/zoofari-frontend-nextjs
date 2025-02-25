@@ -20,9 +20,9 @@ const ModalChangePassword = (props: any) => {
 
   if (!hasMounted) return <></>;
 
-  const onFinishStep0 = async (values: any) => {
+  const onFinishStep0 = async (values: IRegister) => {
     const { email } = values;
-    const res = await sendRequest<IBackendRes<any>>({
+    const res = await sendRequest<IBackendRes<IRegister>>({
       url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/retry-password`,
       method: "POST",
       body: {
@@ -40,7 +40,7 @@ const ModalChangePassword = (props: any) => {
     }
   };
 
-  const onFinishStep1 = async (values: any) => {
+  const onFinishStep1 = async (values: IRegister) => {
     const { code, password, confirmPassword } = values;
     if (password !== confirmPassword) {
       notification.error({
@@ -49,7 +49,7 @@ const ModalChangePassword = (props: any) => {
       });
       return;
     }
-    const res = await sendRequest<IBackendRes<any>>({
+    const res = await sendRequest<IBackendRes<IRegister>>({
       url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/change-password`,
       method: "POST",
       body: {

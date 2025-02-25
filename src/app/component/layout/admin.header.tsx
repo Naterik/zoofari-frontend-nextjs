@@ -15,19 +15,6 @@ const AdminHeader = (props: any) => {
   const { collapseMenu, setCollapseMenu } = useContext(AdminContext)!;
 
   const items: MenuProps["items"] = [
-    // {
-    //   key: "1",
-    //   label: (
-    //     <a
-    //       href="#"
-    //       onClick={(e) => {
-    //         e.preventDefault();
-    //       }}
-    //     >
-    //       1st menu item
-    //     </a>
-    //   ),
-    // },
     {
       key: "4",
       danger: true,

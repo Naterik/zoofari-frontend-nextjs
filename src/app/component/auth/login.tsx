@@ -7,13 +7,14 @@ import { authenticate } from "@/utils/action";
 import ModelReactive from "./modal.reactive";
 import { useState } from "react";
 import ModalChangePassword from "./modal.change.password";
+import { IUser } from "@/types/next-auth";
 
 const Login = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const router = useRouter();
   const [userEmail, setUserEmail] = useState("");
   const [changePassword, setChangePassword] = useState(false);
-  const onFinish = async (values: any) => {
+  const onFinish = async (values: IUser) => {
     const { username, password } = values;
     setUserEmail("");
     const res = await authenticate(username, password);
