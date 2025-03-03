@@ -1,22 +1,26 @@
 "use client";
 
 import { DeleteTwoTone, EditTwoTone } from "@ant-design/icons";
-import { Button, Popconfirm, Table } from "antd";
+import { Button, Popconfirm, Table, TablePaginationConfig } from "antd";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import UserCreate from "./user.create";
 import UserUpdate from "./user.update";
-import { handleDeleteUserAction } from "@/utils/action";
+import { handleDeleteUserAction } from "@/services/action";
+import dayjs from "dayjs";
+
+interface IPaginationMeta {
+  currentPage: number;
+  totalPages: number;
+  itemsPerPage: number;
+  totalItems: number;
+}
 
 interface IProps {
-  users: any;
-  meta: {
-    current: number;
-    pageSize: number;
-    pages: number;
-    total: number;
-  };
+  users: IUserModel[];
+  meta: IPaginationMeta;
 }
+
 const UserTable = (props: IProps) => {
   const { users, meta } = props;
   const searchParams = useSearchParams();
@@ -25,27 +29,40 @@ const UserTable = (props: IProps) => {
 
   const [isCreateModalOpen, setIsCreateModalOpen] = useState<boolean>(false);
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState<boolean>(false);
-  const [dataUpdate, setDataUpdate] = useState<any>(null);
+  const [dataUpdate, setDataUpdate] = useState<IUserModel | null>(null);
 
   const columns = [
     {
       title: "STT",
-      render: (_: any, record: any, index: any) => {
-        return <>{index + 1 + (meta.current - 1) * meta.pageSize}</>;
+      render: (_: any, _record: IUserModel, index: number) => {
+        return <>{index + 1 + (meta.currentPage - 1) * meta.itemsPerPage}</>;
       },
     },
     {
-      title: "id",
+      title: "ID",
       dataIndex: "id",
+      hidden: true,
+    },
+    {
+      title: "Tên",
+      dataIndex: "name",
     },
     {
       title: "Email",
       dataIndex: "email",
     },
     {
+      title: "Địa chỉ",
+      dataIndex: "address",
+    },
+    {
+      title: "Ngày sinh",
+      dataIndex: "dateOfBirth",
+      render: (date: string) => dayjs(date).format(" DD/MM/YYYY"),
+    },
+    {
       title: "Actions",
-
-      render: (text: any, record: any, index: any) => {
+      render: (_: any, record: IUserModel) => {
         return (
           <>
             <EditTwoTone
@@ -61,7 +78,7 @@ const UserTable = (props: IProps) => {
               placement="leftTop"
               title={"Xác nhận xóa user"}
               description={"Bạn có chắc chắn muốn xóa user này ?"}
-              onConfirm={async () => await handleDeleteUserAction(record?.id)}
+              onConfirm={async () => await handleDeleteUserAction(record.id)}
               okText="Xác nhận"
               cancelText="Hủy"
             >
@@ -75,12 +92,15 @@ const UserTable = (props: IProps) => {
     },
   ];
 
-  const onChange = (pagination: any, filters: any, sorter: any, extra: any) => {
-    if (pagination && pagination.current) {
-      const params = new URLSearchParams(searchParams);
-      params.set("current", pagination.current);
-      replace(`${pathname}?${params.toString()}`);
+  const onChange = (pagination: TablePaginationConfig) => {
+    const params = new URLSearchParams(searchParams);
+    if (pagination.current) {
+      params.set("page", pagination.current.toString());
     }
+    if (pagination.pageSize) {
+      params.set("limit", pagination.pageSize.toString());
+    }
+    replace(`${pathname}?${params.toString()}`);
   };
 
   return (
@@ -102,14 +122,13 @@ const UserTable = (props: IProps) => {
         columns={columns}
         rowKey={"id"}
         pagination={{
-          current: meta.current,
-          pageSize: meta.pageSize,
+          current: meta.currentPage,
+          pageSize: meta.itemsPerPage,
           showSizeChanger: true,
-          total: meta.total,
+          total: meta.totalItems,
           showTotal: (total, range) => {
             return (
               <div>
-                {" "}
                 {range[0]}-{range[1]} trên {total} rows
               </div>
             );

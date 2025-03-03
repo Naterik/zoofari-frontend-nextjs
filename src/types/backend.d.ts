@@ -21,12 +21,12 @@ declare global {
 
   interface IModelPaginate<T> {
     meta: {
-      current: number;
-      pageSize: number;
-      pages: number;
-      total: number;
+      currentPage: number;
+      totalPages: number;
+      itemsPerPage: number;
+      totalItems: number;
     };
-    result: T[];
+    data: T[];
   }
 
   interface ILogin {

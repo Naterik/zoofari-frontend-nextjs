@@ -1,23 +1,29 @@
-import UserTable from "@/app/component/admin/user.table";
+import TableUser from "@/app/component/admin/user.table";
 import { auth } from "@/auth";
-
 import { sendRequest } from "@/utils/api";
 
 interface IProps {
   params: { id: string };
   searchParams: { [key: string]: string | string[] | undefined };
 }
+
 const ManageUserPage = async (props: IProps) => {
-  const current = props?.searchParams?.current ?? 1;
-  const pageSize = props?.searchParams?.pageSize ?? 10;
+  const page =
+    typeof props?.searchParams?.page === "string"
+      ? parseInt(props.searchParams.page)
+      : 1;
+  const limit =
+    typeof props?.searchParams?.limit === "string"
+      ? parseInt(props.searchParams.limit)
+      : 10;
   const session = await auth();
 
-  const res = await sendRequest<IBackendRes<any>>({
-    url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/users`,
+  const res = await sendRequest<IBackendRes<IModelPaginate<IUserModel>>>({
+    url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/users`,
     method: "GET",
     queryParams: {
-      current,
-      pageSize,
+      page,
+      limit,
     },
     headers: {
       Authorization: `Bearer ${session?.user?.access_token}`,
@@ -27,9 +33,19 @@ const ManageUserPage = async (props: IProps) => {
     },
   });
 
+  const defaultMeta = {
+    currentPage: 1,
+    totalPages: 1,
+    itemsPerPage: 5,
+    totalItems: 0,
+  };
+
   return (
     <div>
-      <UserTable users={res?.data?.results ?? []} meta={res?.data?.meta} />
+      <TableUser
+        users={res?.data?.data ?? []}
+        meta={res?.data?.meta ?? defaultMeta}
+      />
     </div>
   );
 };

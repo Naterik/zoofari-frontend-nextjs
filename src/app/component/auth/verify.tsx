@@ -20,8 +20,8 @@ const Verify = (props: any) => {
   const router = useRouter();
   const onFinish = async (values: any) => {
     const { id, code } = values;
-    const res = await sendRequest<IBackendRes<IVerify>>({
-      url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/check-code`,
+    const res = await sendRequest<IBackendRes<IRegister>>({
+      url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/auth/check-code`,
       method: "POST",
       body: {
         id,

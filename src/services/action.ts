@@ -2,7 +2,7 @@
 
 import { auth, signIn } from "@/auth";
 import { revalidateTag } from "next/cache";
-import { sendRequest } from "./api";
+import { sendRequest } from "../utils/api";
 
 export async function authenticate(username: string, password: string) {
   try {
@@ -34,10 +34,10 @@ export async function authenticate(username: string, password: string) {
   }
 }
 
-export const handleCreateUserAction = async (data: IUserModel) => {
+export const handleCreateUserAction = async (data: Partial<IUserModel>) => {
   const session = await auth();
-  const res = await sendRequest<IBackendRes<any>>({
-    url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/users`,
+  const res = await sendRequest<IBackendRes<IUserModel>>({
+    url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/users`,
     method: "POST",
     headers: {
       Authorization: `Bearer ${session?.user?.access_token}`,
@@ -48,10 +48,13 @@ export const handleCreateUserAction = async (data: IUserModel) => {
   return res;
 };
 
-export const handleUpdateUserAction = async (id: any, data: any) => {
+export const handleUpdateUserAction = async (
+  id: string,
+  data: Partial<IUserModel>
+) => {
   const session = await auth();
-  const res = await sendRequest<IBackendRes<any>>({
-    url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/users/${id}`,
+  const res = await sendRequest<IBackendRes<IUserModel>>({
+    url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/users/${id}`,
     method: "PATCH",
     headers: {
       Authorization: `Bearer ${session?.user?.access_token}`,
@@ -62,10 +65,10 @@ export const handleUpdateUserAction = async (id: any, data: any) => {
   return res;
 };
 
-export const handleDeleteUserAction = async (id: any) => {
+export const handleDeleteUserAction = async (id: string) => {
   const session = await auth();
-  const res = await sendRequest<IBackendRes<any>>({
-    url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/users/${id}`,
+  const res = await sendRequest<IBackendRes<IUserModel>>({
+    url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/users/${id}`,
     method: "DELETE",
     headers: {
       Authorization: `Bearer ${session?.user?.access_token}`,

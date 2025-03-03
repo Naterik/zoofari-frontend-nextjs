@@ -1,31 +1,32 @@
-import { handleUpdateUserAction } from "@/utils/action";
+import { handleUpdateUserAction } from "@/services/action";
 import { Modal, Input, Form, Row, Col, message, notification } from "antd";
 import { useEffect } from "react";
 
 interface IProps {
   isUpdateModalOpen: boolean;
   setIsUpdateModalOpen: (v: boolean) => void;
-  dataUpdate: any;
-  setDataUpdate: any;
+  dataUpdate: IUserModel | null;
+  setDataUpdate: (v: IUserModel | null) => void;
 }
 
 const UserUpdate = (props: IProps) => {
   const { isUpdateModalOpen, setIsUpdateModalOpen, dataUpdate, setDataUpdate } =
     props;
-
-  const [form] = Form.useForm();
+  const [form] = Form.useForm<Partial<IUserModel>>();
 
   useEffect(() => {
     if (dataUpdate) {
-      //code
       form.setFieldsValue({
-        name: dataUpdate.name,
         email: dataUpdate.email,
+        name: dataUpdate.name,
         phone: dataUpdate.phone,
         address: dataUpdate.address,
+        gender: dataUpdate.gender,
       });
+    } else {
+      form.resetFields();
     }
-  }, [dataUpdate]);
+  }, [dataUpdate, form]);
 
   const handleCloseUpdateModal = () => {
     form.resetFields();
@@ -33,23 +34,35 @@ const UserUpdate = (props: IProps) => {
     setDataUpdate(null);
   };
 
-  const onFinish = async (values: any) => {
-    if (dataUpdate) {
-      const { name, phone, address } = values;
-      const res = await handleUpdateUserAction(dataUpdate.id, {
-        name,
-        phone,
-        address,
+  const onFinish = async (values: Partial<IUserModel>) => {
+    if (!dataUpdate) {
+      notification.error({
+        message: "Error",
+        description: "No user selected for update",
       });
-      if (res?.data) {
-        handleCloseUpdateModal();
-        message.success("Update user succeed");
-      } else {
-        notification.error({
-          message: "Update User error",
-          description: res?.message,
-        });
-      }
+      return;
+    }
+
+    const { name, phone, address, gender, dateOfBirth, isActive, role } =
+      values;
+    const res = await handleUpdateUserAction(dataUpdate.id, {
+      name,
+      phone,
+      address,
+      gender,
+      dateOfBirth,
+      isActive,
+      role,
+    });
+
+    if (res?.data) {
+      handleCloseUpdateModal();
+      message.success("Update user succeed");
+    } else {
+      notification.error({
+        message: "Update User error",
+        description: res?.message || "Something went wrong",
+      });
     }
   };
 
@@ -58,7 +71,7 @@ const UserUpdate = (props: IProps) => {
       title="Update a user"
       open={isUpdateModalOpen}
       onOk={() => form.submit()}
-      onCancel={() => handleCloseUpdateModal()}
+      onCancel={handleCloseUpdateModal}
       maskClosable={false}
     >
       <Form name="basic" onFinish={onFinish} layout="vertical" form={form}>
@@ -68,7 +81,6 @@ const UserUpdate = (props: IProps) => {
               <Input type="email" disabled />
             </Form.Item>
           </Col>
-
           <Col span={24} md={12}>
             <Form.Item
               label="Name"
@@ -83,9 +95,13 @@ const UserUpdate = (props: IProps) => {
               <Input />
             </Form.Item>
           </Col>
-
           <Col span={24} md={12}>
             <Form.Item label="Address" name="address">
+              <Input />
+            </Form.Item>
+          </Col>
+          <Col span={24} md={12}>
+            <Form.Item label="Gender" name="gender">
               <Input />
             </Form.Item>
           </Col>

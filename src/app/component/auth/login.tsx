@@ -3,7 +3,7 @@ import { Button, Col, Divider, Form, Input, notification, Row } from "antd";
 import { ArrowLeftOutlined } from "@ant-design/icons";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { authenticate } from "@/utils/action";
+import { authenticate } from "@/services/action";
 import ModelReactive from "./modal.reactive";
 import { useState } from "react";
 import ModalChangePassword from "./modal.change.password";
@@ -14,7 +14,7 @@ const Login = () => {
   const router = useRouter();
   const [userEmail, setUserEmail] = useState("");
   const [changePassword, setChangePassword] = useState(false);
-  const onFinish = async (values: IUser) => {
+  const onFinish = async (values: any) => {
     const { username, password } = values;
     setUserEmail("");
     const res = await authenticate(username, password);
