@@ -1,4 +1,4 @@
-import Login from "@/app/component/auth/login";
+import Login from "@/component/auth/login";
 import { auth } from "@/auth";
 
 const LoginPage = async () => {

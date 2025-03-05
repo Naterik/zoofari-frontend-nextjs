@@ -100,11 +100,11 @@ const UserUpdate = (props: IProps) => {
               <Input />
             </Form.Item>
           </Col>
-          <Col span={24} md={12}>
+          {/* <Col span={24} md={12}>
             <Form.Item label="Gender" name="gender">
               <Input />
             </Form.Item>
-          </Col>
+          </Col> */}
         </Row>
       </Form>
     </Modal>

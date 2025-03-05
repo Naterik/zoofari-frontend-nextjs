@@ -4,6 +4,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { AntdRegistry } from "@ant-design/nextjs-registry";
 import NextAuthWrapper from "@/libary/next.auth.wrapper";
+import Header from "@/component/layout.client/client.header";
+import Footer from "@/component/layout.client/client.footer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -29,7 +31,9 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <AntdRegistry>
+          <Header />
           <NextAuthWrapper>{children}</NextAuthWrapper>
+          <Footer />
         </AntdRegistry>
       </body>
     </html>

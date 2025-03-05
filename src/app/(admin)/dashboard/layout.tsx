@@ -1,7 +1,7 @@
-import AdminContent from "@/app/component/layout/admin.content";
-import AdminFooter from "@/app/component/layout/admin.footer";
-import AdminHeader from "@/app/component/layout/admin.header";
-import AdminSider from "@/app/component/layout/admin.sider";
+import AdminContent from "@/component/layout.admin/admin.content";
+import AdminFooter from "@/component/layout.admin/admin.footer";
+import AdminHeader from "@/component/layout.admin/admin.header";
+import AdminSider from "@/component/layout.admin/admin.sider";
 import { auth } from "@/auth";
 import { AdminContextProvider } from "@/libary/admin.context";
 

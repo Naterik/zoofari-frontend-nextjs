@@ -9,16 +9,14 @@ import UserUpdate from "./user.update";
 import { handleDeleteUserAction } from "@/services/action";
 import dayjs from "dayjs";
 
-interface IPaginationMeta {
-  currentPage: number;
-  totalPages: number;
-  itemsPerPage: number;
-  totalItems: number;
-}
-
 interface IProps {
   users: IUserModel[];
-  meta: IPaginationMeta;
+  meta: {
+    currentPage: number;
+    totalPages: number;
+    itemsPerPage: number;
+    totalItems: number;
+  };
 }
 
 const UserTable = (props: IProps) => {
@@ -26,7 +24,6 @@ const UserTable = (props: IProps) => {
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const { replace } = useRouter();
-
   const [isCreateModalOpen, setIsCreateModalOpen] = useState<boolean>(false);
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState<boolean>(false);
   const [dataUpdate, setDataUpdate] = useState<IUserModel | null>(null);

@@ -1,4 +1,4 @@
-import TableUser from "@/app/component/admin/user.table";
+import TableUser from "@/component/admin/user/user.table";
 import { auth } from "@/auth";
 import { sendRequest } from "@/utils/api";
 

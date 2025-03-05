@@ -1,11 +1,11 @@
-import AdminCard from "@/app/component/admin/admin.card";
+import AdminCard from "@/component/admin/admin.card";
 
-const DashboardPage=()=>{
+const DashboardPage = () => {
   return (
     <div>
-      <AdminCard/>
+      <AdminCard />
     </div>
   );
-}
+};
 
 export default DashboardPage;

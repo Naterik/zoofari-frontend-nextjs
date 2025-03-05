@@ -1,4 +1,4 @@
-import Verify from "@/app/component/auth/verify";
+import Verify from "@/component/auth/verify";
 
 const VerifyPage = async ({ params }: { params: Promise<{ id: string }> }) => {
   // const id = (await params).id;
