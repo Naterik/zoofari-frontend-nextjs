@@ -8,7 +8,7 @@ import {
 } from "@ant-design/icons";
 import React, { useContext } from "react";
 import { Layout, Menu, type MenuProps } from "antd";
-import { AdminContext } from "@/libary/admin.context";
+import { AdminContext } from "@/lib/admin.context";
 import Link from "next/link";
 type MenuItem = Required<MenuProps>["items"][number];
 const AdminSider = () => {

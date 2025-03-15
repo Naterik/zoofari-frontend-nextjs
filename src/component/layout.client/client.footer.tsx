@@ -9,8 +9,22 @@ import {
   IconButton,
 } from "@mui/material";
 import { Facebook, Twitter, Instagram, YouTube } from "@mui/icons-material";
+import React from "react";
+import { usePathname } from "next/navigation";
 
-export default function Footer() {
+export default function AppFooter() {
+  const pathname = usePathname();
+  const [hoveredService, setHoveredService] = React.useState(false);
+  const isActive = (path: string) => pathname === path;
+
+  const buttonStyles = {
+    my: 2,
+    color: "white",
+    display: "block",
+    "&:hover": {
+      color: "#2EB872",
+    },
+  };
   return (
     <Box
       component="footer"
@@ -19,19 +33,21 @@ export default function Footer() {
         color: "white",
         py: 6,
         mt: 4,
+        fontFamily: "Roboto",
       }}
     >
       <Container maxWidth="lg">
         <Grid container spacing={3} justifyContent="space-between">
           <Grid item xs={12} sm={6} md={3}>
             <Typography
-              variant="h6"
+              variant="h4"
               gutterBottom
               sx={{
+                mr: 2,
                 fontWeight: 700,
                 letterSpacing: ".3rem",
-                color: "white",
-                textDecoration: "none", // Loại bỏ gạch chân
+                color: "#2EB872",
+                textDecoration: "none",
               }}
             >
               Zoofari
@@ -44,7 +60,6 @@ export default function Footer() {
               ảnh sống động.
             </Typography>
           </Grid>
-
           <Grid item xs={12} sm={6} md={3}>
             <Typography
               variant="h6"
@@ -52,7 +67,7 @@ export default function Footer() {
               sx={{
                 fontWeight: 700,
                 letterSpacing: ".2rem",
-                color: "white", // Làm nổi bật tiêu đề
+                color: "white",
                 textDecoration: "none",
               }}
             >
@@ -63,15 +78,20 @@ export default function Footer() {
                 href="#"
                 color="inherit"
                 display="block"
-                sx={{ textDecoration: "none" }}
+                sx={{
+                  ...buttonStyles,
+                  textDecoration: "none",
+                }}
               >
                 Giới thiệu
               </Link>
               <Link
-                href="#"
-                color="inherit"
+                href="/animal"
                 display="block"
-                sx={{ textDecoration: "none" }}
+                sx={{
+                  ...buttonStyles,
+                  textDecoration: "none",
+                }}
               >
                 Động vật nổi bật
               </Link>
@@ -79,7 +99,7 @@ export default function Footer() {
                 href="#"
                 color="inherit"
                 display="block"
-                sx={{ textDecoration: "none" }}
+                sx={{ ...buttonStyles, textDecoration: "none" }}
               >
                 Blog
               </Link>
@@ -87,7 +107,7 @@ export default function Footer() {
                 href="#"
                 color="inherit"
                 display="block"
-                sx={{ textDecoration: "none" }}
+                sx={{ ...buttonStyles, textDecoration: "none" }}
               >
                 Liên hệ
               </Link>
@@ -100,7 +120,6 @@ export default function Footer() {
               gutterBottom
               sx={{
                 fontWeight: 700,
-                letterSpacing: ".2rem",
                 color: "white", // Làm nổi bật tiêu đề
                 textDecoration: "none",
               }}
@@ -112,7 +131,7 @@ export default function Footer() {
                 href="#"
                 color="inherit"
                 display="block"
-                sx={{ textDecoration: "none" }}
+                sx={{ ...buttonStyles, textDecoration: "none" }}
               >
                 Chính sách bảo mật
               </Link>
@@ -120,7 +139,7 @@ export default function Footer() {
                 href="#"
                 color="inherit"
                 display="block"
-                sx={{ textDecoration: "none" }}
+                sx={{ ...buttonStyles, textDecoration: "none" }}
               >
                 Điều khoản sử dụng
               </Link>
@@ -128,7 +147,7 @@ export default function Footer() {
                 href="#"
                 color="inherit"
                 display="block"
-                sx={{ textDecoration: "none" }}
+                sx={{ ...buttonStyles, textDecoration: "none" }}
               >
                 Hỗ trợ khách hàng
               </Link>
@@ -136,45 +155,50 @@ export default function Footer() {
                 href="#"
                 color="inherit"
                 display="block"
-                sx={{ textDecoration: "none" }}
+                sx={{ ...buttonStyles, textDecoration: "none" }}
               >
                 FAQ
               </Link>
             </Box>
           </Grid>
 
-          <Grid item xs={12} sm={6} md={3}>
+          <Grid item xs={10} sm={2} md={3}>
             <Typography
               variant="h6"
-              gutterBottom
+              // gutterBottom
               sx={{
                 fontWeight: 700,
-                letterSpacing: ".2rem",
-                color: "white", // Làm nổi bật tiêu đề
+                color: "white",
                 textDecoration: "none",
               }}
             >
               Theo dõi chúng tôi
             </Typography>
-            <Box>
-              <IconButton href="#" color="inherit">
-                <Facebook />
-              </IconButton>
-              <IconButton href="#" color="inherit">
-                <Twitter />
-              </IconButton>
-              <IconButton href="#" color="inherit">
-                <Instagram />
-              </IconButton>
-              <IconButton href="#" color="inherit">
-                <YouTube />
-              </IconButton>
-            </Box>
+            <div
+              style={{ display: "flex", position: "relative" }}
+              onMouseEnter={() => setHoveredService(true)}
+              onMouseLeave={() => setHoveredService(false)}
+            >
+              <Box>
+                <IconButton href="#" color="inherit">
+                  <Facebook sx={{ ...buttonStyles }} />
+                </IconButton>
+                <IconButton href="#" color="inherit">
+                  <Twitter sx={{ ...buttonStyles }} />
+                </IconButton>
+                <IconButton href="#" color="inherit">
+                  <Instagram sx={{ ...buttonStyles }} />
+                </IconButton>
+                <IconButton href="#" color="inherit">
+                  <YouTube sx={{ ...buttonStyles }} />
+                </IconButton>
+              </Box>
+            </div>
           </Grid>
         </Grid>
         <Box
           textAlign="center"
-          mt={4}
+          mt={2}
           pt={2}
           borderTop={1}
           borderColor="rgba(255, 255, 255, 0.5)"

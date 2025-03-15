@@ -7,7 +7,6 @@ import { authenticate } from "@/services/action";
 import ModelReactive from "./modal.reactive";
 import { useState } from "react";
 import ModalChangePassword from "./modal.change.password";
-import { IUser } from "@/types/next-auth";
 
 const Login = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);

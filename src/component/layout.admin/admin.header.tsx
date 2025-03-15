@@ -6,7 +6,7 @@ import { useContext } from "react";
 import { DownOutlined, SmileOutlined } from "@ant-design/icons";
 import type { MenuProps } from "antd";
 import { Dropdown, Space } from "antd";
-import { AdminContext } from "@/libary/admin.context";
+import { AdminContext } from "@/lib/admin.context";
 import { signOut, useSession } from "next-auth/react";
 
 const AdminHeader = (props: any) => {

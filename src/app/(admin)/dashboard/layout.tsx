@@ -3,7 +3,7 @@ import AdminFooter from "@/component/layout.admin/admin.footer";
 import AdminHeader from "@/component/layout.admin/admin.header";
 import AdminSider from "@/component/layout.admin/admin.sider";
 import { auth } from "@/auth";
-import { AdminContextProvider } from "@/libary/admin.context";
+import { AdminContextProvider } from "@/lib/admin.context";
 
 const AdminLayout = async ({
   children,
