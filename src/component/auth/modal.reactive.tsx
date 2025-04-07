@@ -25,7 +25,7 @@ const ModelReactive = (props: any) => {
   const onFinishStep0 = async (values: any) => {
     const { email } = values;
     const res = await sendRequest<IBackendRes<any>>({
-      url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/auth/retry-active`,
+      url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/retry-active`,
       method: "POST",
       body: {
         email,
@@ -44,7 +44,7 @@ const ModelReactive = (props: any) => {
   const onFinishStep1 = async (values: any) => {
     const { code } = values;
     const res = await sendRequest<IBackendRes<any>>({
-      url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/auth/check-code`,
+      url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/check-code`,
       method: "POST",
       body: {
         id: userId,

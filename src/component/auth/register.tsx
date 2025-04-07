@@ -20,7 +20,7 @@ const Register = () => {
   const onFinish = async (values: IRegister) => {
     const { email, password, name } = values;
     const res = await sendRequest<IBackendRes<IRegister>>({
-      url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/auth/register`,
+      url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/register`,
       method: "POST",
       body: {
         email,

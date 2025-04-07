@@ -13,21 +13,35 @@ const Login = () => {
   const router = useRouter();
   const [userEmail, setUserEmail] = useState("");
   const [changePassword, setChangePassword] = useState(false);
+
   const onFinish = async (values: any) => {
     const { username, password } = values;
     setUserEmail("");
     const res = await authenticate(username, password);
     if (res?.error) {
-      if (res?.code === 2) {
+      if (res.code === 2) {
+        notification.error({
+          message: "Tài khoản chưa kích hoạt",
+          description: "Vui lòng kích hoạt tài khoản",
+        });
         setIsModalOpen(true);
         setUserEmail(username);
-        return;
+      } else if (res.code === 1) {
+        notification.error({
+          message: "Đăng nhập thất bại",
+          description: "Email hoặc mật khẩu không đúng",
+        });
+      } else {
+        notification.error({
+          message: "Lỗi hệ thống",
+          description: "Vui lòng thử lại sau",
+        });
       }
-      notification.error({
-        message: "Đăng nhập thất bại",
-        description: res.error,
+    } else if (res?.success) {
+      notification.success({
+        message: "Đăng nhập thành công",
+        description: "Chuyển hướng đến dashboard...",
       });
-    } else {
       router.push("/dashboard");
     }
   };

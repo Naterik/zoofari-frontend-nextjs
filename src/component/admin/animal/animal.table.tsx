@@ -3,52 +3,35 @@
 import { DeleteTwoTone, EditTwoTone } from "@ant-design/icons";
 import { Button, Popconfirm, Table, TablePaginationConfig } from "antd";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useState, useEffect } from "react";
-import UserCreate from "./user.create";
-import UserUpdate from "./user.update";
-import { handleDeleteUserAction } from "@/services/user";
-
-interface IRole {
-  id: number;
-  name: string;
-  description: string;
-}
+import { useState } from "react";
+import AnimalCreate from "./animal.create";
+import AnimalUpdate from "./animal.update";
+// import { handleDeleteAnimalAction } from "@/services/animal"; // Giả định service
+import dayjs from "dayjs";
 
 interface IProps {
-  users: IUserModel[];
+  animals: IAnimals[];
   meta: {
     currentPage: number;
     totalPages: number;
     itemsPerPage: number;
     totalItems: number;
-    itemCount: number;
   };
-  roles: IRole[];
 }
 
-const UserTable = (props: IProps) => {
-  const { users: initialUsers, meta: initialMeta, roles } = props;
-  const [users, setUsers] = useState<IUserModel[]>(initialUsers);
-  const [meta, setMeta] = useState(initialMeta);
+const AnimalTable = (props: IProps) => {
+  const { animals, meta } = props;
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const { replace } = useRouter();
   const [isCreateModalOpen, setIsCreateModalOpen] = useState<boolean>(false);
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState<boolean>(false);
-  const [dataUpdate, setDataUpdate] = useState<IUserModel | null>(null);
-
-  // Sync props with state after hydration
-  useEffect(() => {
-    console.log("Initial users in UserTable:", initialUsers);
-    console.log("Initial meta in UserTable:", initialMeta);
-    setUsers(initialUsers);
-    setMeta(initialMeta);
-  }, [initialUsers, initialMeta]);
+  const [dataUpdate, setDataUpdate] = useState<IAnimals | null>(null);
 
   const columns = [
     {
       title: "STT",
-      render: (_: any, _record: IUserModel, index: number) => {
+      render: (_: any, _record: IAnimals, index: number) => {
         return <>{index + 1 + (meta.currentPage - 1) * meta.itemsPerPage}</>;
       },
     },
@@ -58,26 +41,32 @@ const UserTable = (props: IProps) => {
       hidden: true,
     },
     {
-      title: "Tên",
+      title: "Name",
       dataIndex: "name",
     },
     {
-      title: "Email",
-      dataIndex: "email",
+      title: "Age",
+      dataIndex: "age",
     },
     {
-      title: "Số điện thoại",
-      dataIndex: "phone",
+      title: "Description",
+      dataIndex: "description",
     },
     {
-      title: "Vai trò",
-      render: (_: any, record: IUserModel) => {
-        return record.userRoles?.map((ur) => ur.role.name).join(", ") || "N/A";
-      },
+      title: "Categories",
+      dataIndex: "categories",
     },
     {
-      title: "Hành động",
-      render: (_: any, record: IUserModel) => {
+      title: "Habitats",
+      dataIndex: "habitats",
+    },
+    {
+      title: "Conservation Status",
+      dataIndex: "conservations",
+    },
+    {
+      title: "Actions",
+      render: (_: any, record: IAnimals) => {
         return (
           <>
             <EditTwoTone
@@ -88,13 +77,12 @@ const UserTable = (props: IProps) => {
                 setDataUpdate(record);
               }}
             />
+
             <Popconfirm
               placement="leftTop"
-              title={"Xác nhận xóa user"}
-              description={"Bạn có chắc chắn muốn xóa user này?"}
-              onConfirm={async () =>
-                await handleDeleteUserAction(String(record.id))
-              }
+              title={"Xác nhận xóa animal"}
+              description={"Bạn có chắc chắn muốn xóa animal này ?"}
+              // onConfirm={async () => await handleDeleteAnimalAction(record.id)}
               okText="Xác nhận"
               cancelText="Hủy"
             >
@@ -129,46 +117,45 @@ const UserTable = (props: IProps) => {
           marginBottom: 20,
         }}
       >
-        <span>Quản lý người dùng</span>
+        <span>Manage Animals</span>
         <Button onClick={() => setIsCreateModalOpen(true)}>
-          Tạo người dùng
+          Create Animal
         </Button>
       </div>
-      {users.length === 0 ? (
-        <div>Không có dữ liệu để hiển thị</div>
-      ) : (
-        <Table
-          bordered
-          dataSource={users}
-          columns={columns}
-          rowKey={"id"}
-          pagination={{
-            current: meta.currentPage,
-            pageSize: meta.itemsPerPage,
-            showSizeChanger: true,
-            total: meta.totalItems,
-            showTotal: (total, range) => (
+      <Table
+        bordered
+        dataSource={animals}
+        columns={columns}
+        rowKey={"id"}
+        pagination={{
+          current: meta.currentPage,
+          pageSize: meta.itemsPerPage,
+          showSizeChanger: true,
+          total: meta.totalItems,
+          showTotal: (total, range) => {
+            return (
               <div>
-                {range[0]}-{range[1]} trên {total} dòng
+                {range[0]}-{range[1]} trên {total} rows
               </div>
-            ),
-          }}
-          onChange={onChange}
-        />
-      )}
-      <UserCreate
+            );
+          },
+        }}
+        onChange={onChange}
+      />
+
+      <AnimalCreate
         isCreateModalOpen={isCreateModalOpen}
         setIsCreateModalOpen={setIsCreateModalOpen}
       />
-      <UserUpdate
+
+      <AnimalUpdate
         isUpdateModalOpen={isUpdateModalOpen}
         setIsUpdateModalOpen={setIsUpdateModalOpen}
         dataUpdate={dataUpdate}
         setDataUpdate={setDataUpdate}
-        roles={roles}
       />
     </>
   );
 };
 
-export default UserTable;
+export default AnimalTable;

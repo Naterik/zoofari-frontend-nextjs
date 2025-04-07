@@ -21,7 +21,7 @@ const Verify = (props: any) => {
   const onFinish = async (values: any) => {
     const { id, code } = values;
     const res = await sendRequest<IBackendRes<IRegister>>({
-      url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/auth/check-code`,
+      url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/check-code`,
       method: "POST",
       body: {
         id,

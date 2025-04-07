@@ -1,5 +1,4 @@
 export {};
-// https://bobbyhadz.com/blog/typescript-make-types-global#declare-global-types-in-typescript
 
 declare global {
   interface IRequest {
@@ -16,17 +15,42 @@ declare global {
     error?: string | string[];
     message: string;
     statusCode: number | string;
-    data?: T;
+    data: T; // Changed from T[] to T to handle both single objects and arrays
+    meta?: {
+      totalItems: number;
+      itemCount: number;
+      itemsPerPage: number;
+      totalPages: number;
+      currentPage: number;
+    };
   }
 
-  interface IModelPaginate<T> {
-    meta: {
-      currentPage: number;
-      totalPages: number;
-      itemsPerPage: number;
-      totalItems: number;
-    };
-    data: T[];
+  interface IRole {
+    id: number;
+    name: string;
+    description: string;
+  }
+
+  interface IUserRole {
+    id: number;
+    userId: number;
+    roleId: number;
+    role: IRole;
+  }
+
+  interface IUserModel {
+    id: number;
+    name: string;
+    email: string;
+    phone: string;
+    userRoles: IUserRole[];
+    address?: string;
+    gender?: string;
+    dateOfBirth?: Date;
+    password?: string;
+    isActive?: boolean;
+    accountType?: string;
+    role?: string;
   }
 
   interface ILogin {
@@ -34,9 +58,11 @@ declare global {
       id: string;
       name: string;
       email: string;
+      roles: string[];
     };
     access_token: string;
   }
+
   interface IRegister {
     id: string;
     name: string;
@@ -45,26 +71,7 @@ declare global {
     confirmPassword: string;
     email: string;
   }
-  interface IUserModel {
-    id: string;
-    name: string;
-    email: string;
-    address: string;
-    phone: string;
-    gender: string;
-    dateOfBirth: Date;
-    password: string;
-    isActive: Boolean;
-    accountType: string;
-    role: string;
-  }
-  interface ITicketModel {
-    id: number;
-    event: string;
-    user: string;
-    price: number;
-    status: string;
-  }
+
   interface IProductModel {
     id: number;
     name: string;
@@ -72,6 +79,7 @@ declare global {
     animal: string;
     image: string;
   }
+
   interface IProductItemsModel {
     id: number;
     titile: string;
@@ -80,25 +88,21 @@ declare global {
     image: string;
     product: string;
   }
-  interface IProductItemOptionsModel {
-    id: number;
-    titile: string;
-    additionPrice: number;
-    optionDecription: string;
-    productItem: string;
-  }
+
   interface IOrders {
     id: number;
     orderDate: Date;
     totalAmount: number;
     status: string;
   }
+
   interface IOrderDetails {
     id: number;
     order: string;
     productItem: string;
     productItemOption: string;
   }
+
   interface INews {
     id: number;
     titile: string;
@@ -106,6 +110,7 @@ declare global {
     createdAt: Date;
     updatedAt: Date;
   }
+
   interface IEvents {
     id: number;
     titile: string;
@@ -114,7 +119,8 @@ declare global {
     endDate: Date;
     ticket?: string;
   }
-  interface IAniaml {
+
+  interface IAnimals {
     id: number;
     name: string;
     age: number;

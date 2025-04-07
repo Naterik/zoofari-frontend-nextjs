@@ -1,4 +1,8 @@
-import { handleCreateUserAction } from "@/services/action";
+import {
+  handleCreateUserAction,
+  handleUpdateUserAction,
+  handleDeleteUserAction,
+} from "@/services/user";
 import { Modal, Input, Form, Row, Col, message, notification } from "antd";
 
 interface IProps {
