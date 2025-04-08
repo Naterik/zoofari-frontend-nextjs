@@ -4,8 +4,8 @@ import { DeleteTwoTone, EditTwoTone } from "@ant-design/icons";
 import { Button, Popconfirm, Table, TablePaginationConfig } from "antd";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useState, useEffect } from "react";
-import UserCreate from "./user.create";
-import UserUpdate from "./user.update";
+import UserCreate from "./users.create";
+import UserUpdate from "./users.update";
 import { handleDeleteUserAction } from "@/services/user";
 
 interface IRole {
@@ -39,8 +39,6 @@ const UserTable = (props: IProps) => {
 
   // Sync props with state after hydration
   useEffect(() => {
-    console.log("Initial users in UserTable:", initialUsers);
-    console.log("Initial meta in UserTable:", initialMeta);
     setUsers(initialUsers);
     setMeta(initialMeta);
   }, [initialUsers, initialMeta]);

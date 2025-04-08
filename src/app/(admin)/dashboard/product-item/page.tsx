@@ -1,12 +1,14 @@
-import ProductTable from "@/component/admin/product/products.table";
+import { auth } from "@/auth/auth";
+import ProductItemsTable from "@/component/admin/product-items/product-items.table";
 import { fetchProducts } from "@/services/product";
+import { fetchProductItems } from "@/services/product-item";
 
 interface IProps {
   params: { id: string };
   searchParams: { [key: string]: string | string[] | undefined };
 }
 
-const ProductPage = async (props: IProps) => {
+const ManageProductItemsPage = async (props: IProps) => {
   const { searchParams } = props;
 
   const paramsObj = await searchParams;
@@ -20,10 +22,22 @@ const ProductPage = async (props: IProps) => {
       ? parseInt(paramsObj.limit, 10)
       : 10;
 
-  const res = await fetchProducts(page, limit).catch((error) => {
+  let res: IBackendRes<IProductItem[]> | null = null;
+  try {
+    res = await fetchProductItems(page, limit);
+  } catch (error) {
+    console.error("Error fetching product items:", error);
+    res = null;
+  }
+
+  let products: IProduct[] = [];
+  try {
+    const productsRes = await fetchProducts();
+    products = productsRes?.data || [];
+  } catch (error) {
     console.error("Error fetching products:", error);
-    return null;
-  });
+    products = [];
+  }
 
   const defaultMeta = {
     currentPage: 1,
@@ -34,10 +48,14 @@ const ProductPage = async (props: IProps) => {
   };
 
   if (!res || !res.meta || res.statusCode !== 200) {
-    console.error("Failed to fetch products, using default meta:", res);
+    console.error("Failed to fetch product items, using default meta:", res);
     return (
       <div>
-        <ProductTable products={[]} meta={defaultMeta} />
+        <ProductItemsTable
+          productItems={[]}
+          meta={defaultMeta}
+          products={products}
+        />
       </div>
     );
   }
@@ -50,13 +68,17 @@ const ProductPage = async (props: IProps) => {
     itemCount: res.meta.itemCount || defaultMeta.itemCount,
   };
 
-  const products = res.data || [];
+  const productItems = Array.isArray(res.data) ? res.data : [];
 
   return (
     <div>
-      <ProductTable products={products} meta={meta} />
+      <ProductItemsTable
+        productItems={productItems}
+        meta={meta}
+        products={products}
+      />
     </div>
   );
 };
 
-export default ProductPage;
+export default ManageProductItemsPage;

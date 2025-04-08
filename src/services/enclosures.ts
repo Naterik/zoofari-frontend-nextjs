@@ -4,24 +4,24 @@ import { revalidateTag } from "next/cache";
 import { sendRequest } from "../utils/api";
 import { auth } from "@/auth/auth";
 
-export const fetchProducts = async (page: number = 1, limit: number = 10) => {
+export const fetchEnclosures = async (page: number = 1, limit: number = 10) => {
   const session = await auth();
-  const res = await sendRequest<IBackendRes<IProduct[]>>({
-    url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/products`,
+  const res = await sendRequest<IBackendRes<IEnclosure[]>>({
+    url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/enclosures`,
     method: "GET",
     queryParams: { page, limit },
     headers: {
       Authorization: `Bearer ${session?.user?.access_token}`,
     },
-    nextOption: { next: { tags: ["list-products"] } },
+    nextOption: { next: { tags: ["list-enclosures"] } },
   });
   return res;
 };
 
-export const fetchProductById = async (id: number) => {
+export const fetchEnclosureById = async (id: number) => {
   const session = await auth();
-  const res = await sendRequest<IBackendRes<IProduct>>({
-    url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/products/${id}`,
+  const res = await sendRequest<IBackendRes<IEnclosure>>({
+    url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/enclosures/${id}`,
     method: "GET",
     headers: {
       Authorization: `Bearer ${session?.user?.access_token}`,
@@ -30,46 +30,46 @@ export const fetchProductById = async (id: number) => {
   return res;
 };
 
-export const createProduct = async (data: IUpdateProductPayload) => {
+export const createEnclosure = async (data: Partial<IEnclosure>) => {
   const session = await auth();
-  const res = await sendRequest<IBackendRes<IProduct>>({
-    url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/products`,
+  const res = await sendRequest<IBackendRes<IEnclosure>>({
+    url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/enclosures`,
     method: "POST",
     headers: {
       Authorization: `Bearer ${session?.user?.access_token}`,
     },
     body: { ...data },
   });
-  revalidateTag("list-products");
+  revalidateTag("list-enclosures");
   return res;
 };
 
-export const updateProduct = async (
+export const updateEnclosure = async (
   id: number,
-  data: IUpdateProductPayload
+  data: IUpdateEnclosurePayload
 ) => {
   const session = await auth();
-  const res = await sendRequest<IBackendRes<IProduct>>({
-    url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/products/${id}`,
+  const res = await sendRequest<IBackendRes<IEnclosure>>({
+    url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/enclosures/${id}`,
     method: "PATCH",
     headers: {
       Authorization: `Bearer ${session?.user?.access_token}`,
     },
     body: { ...data },
   });
-  revalidateTag("list-products");
+  revalidateTag("list-enclosures");
   return res;
 };
 
-export const deleteProduct = async (id: number) => {
+export const deleteEnclosure = async (id: number) => {
   const session = await auth();
   const res = await sendRequest<IBackendRes<null>>({
-    url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/products/${id}`,
+    url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/enclosures/${id}`,
     method: "DELETE",
     headers: {
       Authorization: `Bearer ${session?.user?.access_token}`,
     },
   });
-  revalidateTag("list-products");
+  revalidateTag("list-enclosures");
   return res;
 };

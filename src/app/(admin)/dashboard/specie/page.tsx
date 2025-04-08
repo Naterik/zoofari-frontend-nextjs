@@ -1,14 +1,15 @@
-import ProductTable from "@/component/admin/product/products.table";
-import { fetchProducts } from "@/services/product";
+import SpeciesTable from "@/component/admin/species/species.table";
+import { fetchSpecies } from "@/services/species";
 
 interface IProps {
   params: { id: string };
   searchParams: { [key: string]: string | string[] | undefined };
 }
 
-const ProductPage = async (props: IProps) => {
+const SpeciesPage = async (props: IProps) => {
   const { searchParams } = props;
 
+  // Await searchParams before using its properties
   const paramsObj = await searchParams;
 
   const page =
@@ -20,11 +21,13 @@ const ProductPage = async (props: IProps) => {
       ? parseInt(paramsObj.limit, 10)
       : 10;
 
-  const res = await fetchProducts(page, limit).catch((error) => {
-    console.error("Error fetching products:", error);
+  // Fetch species from the backend
+  const res = await fetchSpecies(page, limit).catch((error) => {
+    console.error("Error fetching species:", error);
     return null;
   });
 
+  // Define default meta as a fallback
   const defaultMeta = {
     currentPage: 1,
     totalPages: 1,
@@ -33,15 +36,17 @@ const ProductPage = async (props: IProps) => {
     itemCount: 0,
   };
 
+  // Check if res is valid and contains meta
   if (!res || !res.meta || res.statusCode !== 200) {
-    console.error("Failed to fetch products, using default meta:", res);
+    console.error("Failed to fetch species, using default meta:", res);
     return (
       <div>
-        <ProductTable products={[]} meta={defaultMeta} />
+        <SpeciesTable species={[]} meta={defaultMeta} />
       </div>
     );
   }
 
+  // Extract meta from the response
   const meta = {
     currentPage: res.meta.currentPage || defaultMeta.currentPage,
     totalPages: res.meta.totalPages || defaultMeta.totalPages,
@@ -50,13 +55,14 @@ const ProductPage = async (props: IProps) => {
     itemCount: res.meta.itemCount || defaultMeta.itemCount,
   };
 
-  const products = res.data || [];
+  // Extract species data from res.data, default to empty array if not present
+  const species = res.data || [];
 
   return (
     <div>
-      <ProductTable products={products} meta={meta} />
+      <SpeciesTable species={species} meta={meta} />
     </div>
   );
 };
 
-export default ProductPage;
+export default SpeciesPage;

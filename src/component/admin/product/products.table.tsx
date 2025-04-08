@@ -3,35 +3,42 @@
 import { DeleteTwoTone, EditTwoTone } from "@ant-design/icons";
 import { Button, Popconfirm, Table, TablePaginationConfig } from "antd";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
-import AnimalCreate from "./animal.create";
-import AnimalUpdate from "./animal.update";
-// import { handleDeleteAnimalAction } from "@/services/animal"; // Giả định service
-import dayjs from "dayjs";
+import { useState, useEffect } from "react";
+import ProductCreate from "./products.create";
+import ProductUpdate from "./products.update";
+import { deleteProduct } from "@/services/product";
 
 interface IProps {
-  animals: IAnimals[];
+  products: IProduct[];
   meta: {
     currentPage: number;
     totalPages: number;
     itemsPerPage: number;
     totalItems: number;
+    itemCount: number;
   };
 }
 
-const AnimalTable = (props: IProps) => {
-  const { animals, meta } = props;
+const ProductTable = (props: IProps) => {
+  const { products: initialProducts, meta: initialMeta } = props;
+  const [products, setProducts] = useState<IProduct[]>(initialProducts);
+  const [meta, setMeta] = useState(initialMeta);
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const { replace } = useRouter();
   const [isCreateModalOpen, setIsCreateModalOpen] = useState<boolean>(false);
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState<boolean>(false);
-  const [dataUpdate, setDataUpdate] = useState<IAnimals | null>(null);
+  const [dataUpdate, setDataUpdate] = useState<IProduct | null>(null);
+
+  useEffect(() => {
+    setProducts(initialProducts);
+    setMeta(initialMeta);
+  }, [initialProducts, initialMeta]);
 
   const columns = [
     {
       title: "STT",
-      render: (_: any, _record: IAnimals, index: number) => {
+      render: (_: any, _record: IProduct, index: number) => {
         return <>{index + 1 + (meta.currentPage - 1) * meta.itemsPerPage}</>;
       },
     },
@@ -41,32 +48,24 @@ const AnimalTable = (props: IProps) => {
       hidden: true,
     },
     {
-      title: "Name",
+      title: "Tên",
       dataIndex: "name",
     },
     {
-      title: "Age",
-      dataIndex: "age",
-    },
-    {
-      title: "Description",
+      title: "Mô tả",
       dataIndex: "description",
     },
     {
-      title: "Categories",
-      dataIndex: "categories",
+      title: "Số lượng tồn kho",
+      dataIndex: "stock",
     },
     {
-      title: "Habitats",
-      dataIndex: "habitats",
+      title: "Trạng thái",
+      dataIndex: "status",
     },
     {
-      title: "Conservation Status",
-      dataIndex: "conservations",
-    },
-    {
-      title: "Actions",
-      render: (_: any, record: IAnimals) => {
+      title: "Hành động",
+      render: (_: any, record: IProduct) => {
         return (
           <>
             <EditTwoTone
@@ -77,12 +76,11 @@ const AnimalTable = (props: IProps) => {
                 setDataUpdate(record);
               }}
             />
-
             <Popconfirm
               placement="leftTop"
-              title={"Xác nhận xóa animal"}
-              description={"Bạn có chắc chắn muốn xóa animal này ?"}
-              // onConfirm={async () => await handleDeleteAnimalAction(record.id)}
+              title={"Xác nhận xóa product"}
+              description={"Bạn có chắc chắn muốn xóa product này?"}
+              onConfirm={async () => await handleDeleteProduct(record.id)}
               okText="Xác nhận"
               cancelText="Hủy"
             >
@@ -95,6 +93,15 @@ const AnimalTable = (props: IProps) => {
       },
     },
   ];
+
+  const handleDeleteProduct = async (id: number) => {
+    const res = await deleteProduct(id);
+    if (res?.statusCode === 200) {
+      replace(`${pathname}?${searchParams.toString()}`);
+    } else {
+      console.error("Lỗi khi xóa product:", res?.message);
+    }
+  };
 
   const onChange = (pagination: TablePaginationConfig) => {
     const params = new URLSearchParams(searchParams);
@@ -117,38 +124,36 @@ const AnimalTable = (props: IProps) => {
           marginBottom: 20,
         }}
       >
-        <span>Manage Animals</span>
-        <Button onClick={() => setIsCreateModalOpen(true)}>
-          Create Animal
-        </Button>
+        <span>Quản lý Products</span>
+        <Button onClick={() => setIsCreateModalOpen(true)}>Tạo mới</Button>
       </div>
-      <Table
-        bordered
-        dataSource={animals}
-        columns={columns}
-        rowKey={"id"}
-        pagination={{
-          current: meta.currentPage,
-          pageSize: meta.itemsPerPage,
-          showSizeChanger: true,
-          total: meta.totalItems,
-          showTotal: (total, range) => {
-            return (
+      {products.length === 0 ? (
+        <div>Không có dữ liệu để hiển thị</div>
+      ) : (
+        <Table
+          bordered
+          dataSource={products}
+          columns={columns}
+          rowKey={"id"}
+          pagination={{
+            current: meta.currentPage,
+            pageSize: meta.itemsPerPage,
+            showSizeChanger: true,
+            total: meta.totalItems,
+            showTotal: (total, range) => (
               <div>
-                {range[0]}-{range[1]} trên {total} rows
+                {range[0]}-{range[1]} trên {total} dòng
               </div>
-            );
-          },
-        }}
-        onChange={onChange}
-      />
-
-      <AnimalCreate
+            ),
+          }}
+          onChange={onChange}
+        />
+      )}
+      <ProductCreate
         isCreateModalOpen={isCreateModalOpen}
         setIsCreateModalOpen={setIsCreateModalOpen}
       />
-
-      <AnimalUpdate
+      <ProductUpdate
         isUpdateModalOpen={isUpdateModalOpen}
         setIsUpdateModalOpen={setIsUpdateModalOpen}
         dataUpdate={dataUpdate}
@@ -158,4 +163,4 @@ const AnimalTable = (props: IProps) => {
   );
 };
 
-export default AnimalTable;
+export default ProductTable;

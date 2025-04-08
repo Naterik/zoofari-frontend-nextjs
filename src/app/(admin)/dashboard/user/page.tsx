@@ -1,4 +1,4 @@
-import TableUser from "@/component/admin/user/user.table";
+import TableUser from "@/component/admin/users/users.table";
 import { fetchUsers } from "@/services/user";
 import { sendRequest } from "@/utils/api";
 import { auth } from "@/auth/auth";

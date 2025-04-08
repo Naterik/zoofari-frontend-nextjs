@@ -15,7 +15,7 @@ declare global {
     error?: string | string[];
     message: string;
     statusCode: number | string;
-    data: T; // Changed from T[] to T to handle both single objects and arrays
+    data: T;
     meta?: {
       totalItems: number;
       itemCount: number;
@@ -53,6 +53,16 @@ declare global {
     role?: string;
   }
 
+  interface IUpdateUserPayload {
+    name?: string;
+    phone?: string;
+    address?: string;
+    gender?: string;
+    dateOfBirth?: Date;
+    roleIds?: number[];
+    isActive?: boolean;
+  }
+
   interface ILogin {
     user: {
       id: string;
@@ -72,6 +82,86 @@ declare global {
     email: string;
   }
 
+  interface IImage {
+    id: number;
+    url: string;
+    description: string;
+  }
+
+  interface ISpecies {
+    id: number;
+    name: string;
+    scientific_name?: string;
+    description?: string;
+    conservation_status?: string;
+  }
+
+  interface IEnclosure {
+    id: number;
+    name: string;
+    location: string;
+    capacity: number;
+  }
+
+  interface IAnimals {
+    id: number;
+    name: string;
+    birth_date: string;
+    gender: string;
+    health_status: string;
+    created_at: string;
+    updated_at: string;
+    species: ISpecies;
+    enclosure: IEnclosure;
+    images: IImage[];
+  }
+
+  interface IUpdateAnimalPayload {
+    name?: string;
+    birth_date?: string;
+    gender?: string;
+    health_status?: string;
+    species_id?: number;
+    enclosure_id?: number;
+    files?: File[];
+    replaceImages?: boolean;
+  }
+
+  interface IProduct {
+    id: number;
+    name: string;
+    description?: string;
+    stock: number;
+    status: string;
+    created_at: string;
+    updated_at: string;
+    animal: IAnimals | null;
+  }
+
+  interface IProductItem {
+    id: number;
+    title: string;
+    basePrice: number;
+    description: string;
+    code: string;
+    stock: number;
+    created_at?: string;
+    updated_at?: string;
+    product: IProduct;
+    images: IImage[];
+  }
+
+  interface IUpdateProductItemPayload {
+    title?: string;
+    basePrice?: number;
+    description?: string;
+    code?: string;
+    stock?: number;
+    productId?: number;
+    files?: File[];
+    replaceImages?: boolean;
+  }
+
   interface IProductModel {
     id: number;
     name: string;
@@ -89,44 +179,24 @@ declare global {
     product: string;
   }
 
-  interface IOrders {
-    id: number;
-    orderDate: Date;
-    totalAmount: number;
-    status: string;
+  interface IUpdateEnclosurePayload {
+    name?: string;
+    location?: string;
+    capacity?: number;
   }
 
-  interface IOrderDetails {
-    id: number;
-    order: string;
-    productItem: string;
-    productItemOption: string;
+  interface IUpdateSpeciesPayload {
+    name?: string;
+    scientific_name?: string;
+    description?: string;
+    conservation_status?: string;
   }
 
-  interface INews {
-    id: number;
-    titile: string;
-    content: string;
-    createdAt: Date;
-    updatedAt: Date;
-  }
-
-  interface IEvents {
-    id: number;
-    titile: string;
-    description: string;
-    startDate: Date;
-    endDate: Date;
-    ticket?: string;
-  }
-
-  interface IAnimals {
-    id: number;
-    name: string;
-    age: number;
-    description: string;
-    categories: string;
-    habitats: string;
-    conservations: string;
+  interface IUpdateProductPayload {
+    name?: string;
+    description?: string;
+    stock?: number;
+    status?: string;
+    animal_id?: number;
   }
 }

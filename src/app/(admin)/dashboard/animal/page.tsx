@@ -1,6 +1,8 @@
-import AnimalTable from "@/component/admin/animal/animal.table";
+import { fetchAnimals } from "@/services/animal";
+import { fetchSpecies } from "@/services/species";
 import { auth } from "@/auth/auth";
-import { sendRequest } from "@/utils/api";
+import { fetchEnclosures } from "@/services/enclosures";
+import AnimalTable from "@/component/admin/animals/animals.table";
 
 interface IProps {
   params: { id: string };
@@ -8,43 +10,79 @@ interface IProps {
 }
 
 const ManageAnimalPage = async (props: IProps) => {
+  const { searchParams } = props;
+
+  const paramsObj = await searchParams;
+
   const page =
-    typeof props?.searchParams?.page === "string"
-      ? parseInt(props.searchParams.page)
+    paramsObj?.page && typeof paramsObj.page === "string"
+      ? parseInt(paramsObj.page, 10)
       : 1;
   const limit =
-    typeof props?.searchParams?.limit === "string"
-      ? parseInt(props.searchParams.limit)
+    paramsObj?.limit && typeof paramsObj.limit === "string"
+      ? parseInt(paramsObj.limit, 10)
       : 10;
-  const session = await auth();
 
-  const res = await sendRequest<IBackendRes<IModelPaginate<IAnimals>>>({
-    url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/animals`, // Giả định endpoint
-    method: "GET",
-    queryParams: {
-      page,
-      limit,
-    },
-    headers: {
-      Authorization: `Bearer ${session?.user?.access_token}`,
-    },
-    nextOption: {
-      next: { tags: ["list-animals"] }, // Thay "list-users" bằng "list-animals"
-    },
-  });
+  let res: IBackendRes<IAnimals[]> | null = null;
+  try {
+    res = await fetchAnimals(page, limit);
+  } catch (error) {
+    console.error("Error fetching animals:", error);
+    res = null;
+  }
+
+  let enclosures: IEnclosure[] = [];
+  let species: ISpecies[] = [];
+  try {
+    const enclosuresRes = await fetchEnclosures();
+    enclosures = enclosuresRes?.data || [];
+    const speciesRes = await fetchSpecies();
+    species = speciesRes?.data || [];
+  } catch (error) {
+    console.error("Error fetching enclosures or species:", error);
+    enclosures = [];
+    species = [];
+  }
 
   const defaultMeta = {
     currentPage: 1,
     totalPages: 1,
-    itemsPerPage: 5,
+    itemsPerPage: 10,
     totalItems: 0,
+    itemCount: 0,
   };
+
+  if (!res || !res.meta || res.statusCode !== 200) {
+    console.error("Failed to fetch animals, using default meta:", res);
+    return (
+      <div>
+        <AnimalTable
+          animals={[]}
+          meta={defaultMeta}
+          enclosures={enclosures}
+          species={species}
+        />
+      </div>
+    );
+  }
+
+  const meta = {
+    currentPage: res.meta.currentPage || defaultMeta.currentPage,
+    totalPages: res.meta.totalPages || defaultMeta.totalPages,
+    itemsPerPage: res.meta.itemsPerPage || defaultMeta.itemsPerPage,
+    totalItems: res.meta.totalItems || defaultMeta.totalItems,
+    itemCount: res.meta.itemCount || defaultMeta.itemCount,
+  };
+
+  const animals = Array.isArray(res.data) ? res.data : [];
 
   return (
     <div>
       <AnimalTable
-        animals={res?.data?.data ?? []}
-        meta={res?.data?.meta ?? defaultMeta}
+        animals={animals}
+        meta={meta}
+        enclosures={enclosures}
+        species={species}
       />
     </div>
   );

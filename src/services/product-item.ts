@@ -31,30 +31,33 @@ export const sendRequest = async <T>(req: IRequest): Promise<T> => {
   return res.json();
 };
 
-export const handleDeleteAnimalImage = async (
-  animalId: number,
+export const handleDeleteProductItemImage = async (
+  productItemId: number,
   imageId: number
 ) => {
   const res = await sendRequest<IBackendRes<any>>({
-    url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/animals/${animalId}/images/${imageId}`,
+    url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/product-items/${productItemId}/images/${imageId}`,
     method: "DELETE",
   });
-  revalidateTag("list-animals");
+  revalidateTag("list-product-items");
   return res;
 };
 
-export const fetchAnimals = async (page: number = 1, limit: number = 10) => {
-  const res = await sendRequest<IBackendRes<IAnimals[]>>({
-    url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/animals`,
+export const fetchProductItems = async (
+  page: number = 1,
+  limit: number = 10
+) => {
+  const res = await sendRequest<IBackendRes<IProductItem[]>>({
+    url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/product-items`,
     method: "GET",
     queryParams: { page, limit },
-    nextOption: { next: { tags: ["list-animals"] } },
+    nextOption: { next: { tags: ["list-product-items"] } },
   });
   return res;
 };
 
-export const handleCreateAnimalAction = async (
-  data: Partial<IAnimals>,
+export const handleCreateProductItemAction = async (
+  data: Partial<IProductItem>,
   files?: File[]
 ) => {
   const formData = new FormData();
@@ -70,18 +73,18 @@ export const handleCreateAnimalAction = async (
   }
 
   const res = await sendRequest<IBackendRes<any>>({
-    url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/animals`,
+    url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/product-items`,
     method: "POST",
     body: formData,
   });
 
-  revalidateTag("list-animals");
+  revalidateTag("list-product-items");
   return res;
 };
 
-export const handleUpdateAnimalAction = async (
+export const handleUpdateProductItemAction = async (
   id: number,
-  data: Partial<IAnimals>,
+  data: Partial<IProductItem>,
   files?: File[]
 ) => {
   const formData = new FormData();
@@ -97,29 +100,29 @@ export const handleUpdateAnimalAction = async (
   }
 
   const res = await sendRequest<IBackendRes<any>>({
-    url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/animals/${id}`,
+    url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/product-items/${id}`,
     method: "PATCH",
     body: formData,
   });
 
-  revalidateTag("list-animals");
+  revalidateTag("list-product-items");
   return res;
 };
 
-export const handleDeleteAnimalAction = async (id: number) => {
-  const res = await sendRequest<IBackendRes<IAnimals>>({
-    url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/animals/${id}`,
+export const handleDeleteProductItemAction = async (id: number) => {
+  const res = await sendRequest<IBackendRes<IProductItem>>({
+    url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/product-items/${id}`,
     method: "DELETE",
   });
-  revalidateTag("list-animals");
+  revalidateTag("list-product-items");
   return res;
 };
 
-export const handleGetAnimalDetails = async (id: number) => {
-  const res = await sendRequest<IBackendRes<IAnimals>>({
-    url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/animals/${id}/details`,
+export const handleGetProductItemDetails = async (id: number) => {
+  const res = await sendRequest<IBackendRes<IProductItem>>({
+    url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/product-items/${id}/details`,
     method: "GET",
-    nextOption: { next: { tags: [`animal-${id}`] } },
+    nextOption: { next: { tags: [`product-item-${id}`] } },
   });
   return res;
 };
