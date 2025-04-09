@@ -4,6 +4,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { AntdRegistry } from "@ant-design/nextjs-registry";
 import { CustomThemeProvider } from "@/lib/custom.theme";
+import AppHeader from "@/component/layout.client/client.header";
+import AppFooter from "@/component/layout.client/client.footer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",

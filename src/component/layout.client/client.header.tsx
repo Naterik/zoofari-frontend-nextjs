@@ -170,6 +170,19 @@ function AppHeader() {
               </Link>
             </Button>
           </Box>
+          <Button
+            sx={{
+              ...buttonStyles,
+              color: isActive("/event") ? "#2EB872" : "black",
+            }}
+          >
+            <Link
+              href="/event"
+              style={{ textDecoration: "none", color: "inherit" }}
+            >
+              Sự kiện
+            </Link>
+          </Button>
 
           {/* User và Cart menu */}
           <Box

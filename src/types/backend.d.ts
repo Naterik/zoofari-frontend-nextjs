@@ -151,6 +151,85 @@ declare global {
     images: IImage[];
   }
 
+  interface IProductItemOption {
+    id: number;
+    title: string;
+    additionPrice: number;
+  }
+
+  interface ICreateOrderDetail {
+    productId: number;
+    productItemId: number;
+    productItemOptionId?: number;
+    quantity: number;
+  }
+
+  interface IOrderDetail {
+    id: number;
+    quantity: number;
+    price: number;
+    order: {
+      id: number;
+      order_date: string;
+      total_amount: string;
+      status: string;
+      user: IUserModel;
+    };
+    product: {
+      id: number;
+      name: string;
+    };
+    productItem: {
+      id: number;
+      title: string;
+      basePrice: number;
+    };
+    productItemOption: {
+      id: number;
+      title: string;
+      additionPrice: number;
+    };
+  }
+
+  interface IPayment {
+    id: number;
+    method: string;
+    status: string;
+    amount: string;
+  }
+
+  interface ITransactionHistory {
+    id: number;
+    action: string;
+    amount: string;
+    timestamp: string;
+  }
+
+  interface IOrder {
+    id: number;
+    order_date: string;
+    total_amount: string;
+    status: string;
+    user: IUserModel;
+    orderDetails: IOrderDetail[];
+    payments: IPayment[];
+    transactionHistories: ITransactionHistory[];
+  }
+
+  interface ICreateOrder {
+    userId: number;
+    orderDetails: ICreateOrderDetail[];
+  }
+
+  interface IUpdateOrderPayload {
+    order_date?: string;
+    total_amount?: string;
+    status?: string;
+    userId?: number;
+    paymentMethod?: string;
+    paymentStatus?: string;
+  }
+
   interface IUpdateProductItemPayload {
     title?: string;
     basePrice?: number;

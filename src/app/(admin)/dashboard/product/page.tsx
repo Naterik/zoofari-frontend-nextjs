@@ -1,4 +1,4 @@
-import ProductTable from "@/component/admin/product/products.table";
+import ProductTable from "@/component/admin/products/products.table";
 import { fetchProducts } from "@/services/product";
 
 interface IProps {
